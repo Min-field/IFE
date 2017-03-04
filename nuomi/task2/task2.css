@@ -1,0 +1,32 @@
+*{
+    padding: 0px; 
+    margin: 0px; 
+}
+
+.stage{
+    width: 500px; 
+    height: 400px; 
+    margin: 50px auto; 
+    background: #F5F5F5; 
+    position: relative;
+}
+
+.stage ul.context-menu{
+    list-style: none; 
+    border: 1px solid #D0D0D0; 
+    background: #ffffff; 
+    width: 180px; 
+    display: none; 
+    position: absolute;
+}
+
+.stage ul.context-menu li{
+    height: 40px; 
+    line-height: 40px; 
+    text-indent: 1.5em;
+    cursor: pointer;
+}
+
+.stage ul.context-menu li:hover{
+    background: #5F9CEC; 
+}
