@@ -1,0 +1,86 @@
+*{
+    padding: 0px; 
+    marggin: 0px; 
+}
+
+/*.stage{
+    width: 500px; 
+    height: 400px; 
+    margin: 50px auto;
+    position: relative;
+}*/
+
+/*background*/
+.bg{
+    width: 500px; 
+    height: 400px; 
+    margin: 50px auto;
+    position: relative;
+    background: url(task6_bg.jpg) no-repeat; 
+    background-size: cover;
+    -webkit-filter: blur(0px);
+    -o-filter: blur(0px);
+    filter: blur(0px);
+}
+/*background blur*/
+.bg:hover{
+    -webkit-filter: blur(3px);
+    -o-filter: blur(3px);
+    filter: blur(3px);: 
+}
+
+/*text streamer*/
+/*only work in webkit which support backgroud-clip and text-fill-color*/
+.text{
+    width: 400px;
+    height: 300px; 
+    
+    font-size: 64px;
+    font-weight: bold;
+    text-align: center; 
+    line-height: 300px; 
+    -webkit-text-fill-color: transparent;
+    
+    background: url(text_border.jpg) no-repeat;
+    background-size: 200% 100%; 
+    -webkit-background-clip: text;  
+    
+    position: absolute;
+    top: 50px; 
+    left: 50px;
+
+    animation: streamer 4s infinite linear;
+}
+@keyframes streamer{
+    0%{
+        background-position: 0 0; 
+    }
+    100%{
+        background-position: 100% 0; 
+    }
+}
+
+.text::before{
+    content: "";
+    width: 100%;
+    height: 0; 
+    position: absolute;
+    top: 50%;
+    left: 0;
+}
+
+.text::after{
+    content: "";
+    width: 0;
+    height: 100%; 
+    position: absolute;
+    top: 0;
+    left: 50%;
+}
+
+.text::before:hover{
+    
+}
+
+
+
