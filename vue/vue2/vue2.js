@@ -6,6 +6,9 @@
 // Observer类
 function Observer(data){
     this.data = data; 
+    this.children = new Array(); 
+    this.parent = null; 
+
     this.evBus = new Event(); 
     this.walk(this.data); 
 }
@@ -20,8 +23,12 @@ Observer.prototype = {
     }, 
 
     define: function(data, key, value){
-        if(typeof value === "object")
-            new Observer(value); 
+        if(typeof value === "object"){
+            var childOb = new Observer(value);
+            this.children.push(childOb); 
+            childOb.parent = this; 
+        } 
+        
         var that = this; 
         Object.defineProperty(data, key, {
             enumerable: true, 
@@ -36,10 +43,14 @@ Observer.prototype = {
 
                 console.log("你设置了 " + key); 
                 console.log("新的" + key + "值为 " + newValue); 
-                
+                value = newValue; 
+
                 that.evBus.on(key); 
-                if(typeof newValue === "object")
-                    new Observer(value); 
+                if(typeof newValue === "object"){
+                    var childOb = new Observer(); 
+                    that.push(childOb); 
+                    childOb.parent = that; 
+                } 
             }
         });
     }, 
@@ -49,11 +60,25 @@ Observer.prototype = {
             callback = function(){
                 console.log("I am " + key + "; I have been changed"); 
             };
-        this.evBus.login(key, callback); 
+        var ob = getObserver(this, key); 
+        key = key.split(".")[key.split(".").length - 1]; 
+        console.log(ob); 
+        ob.evBus.login(key, callback); 
         console.log(this.evBus); 
     }
 }
 
+function getObserver(ob, key){
+    var keys = key.split("."); 
+    for(var i = 2; i < keys.length; i++){
+        var attr = keys[i]; 
+        ob.children.forEach(function(child){
+            if(child.data.hasOwnProperty(attr))
+                ob = child; 
+        }); 
+    }
+    return ob;
+}
 // 事件模型，实现回调函数
 // 对每个Observer都有一个事件队列
 // 事件的键值对为 需要监测的属性 : 回调函数
@@ -93,3 +118,6 @@ var observer = new Observer(data);
 
 // observer.evBus["user"][0](); 
 // observer.evBus.on("user"); 
+
+observer.$watch("data.user"); 
+observer.$watch("data.user.age"); 
