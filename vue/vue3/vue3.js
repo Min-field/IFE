@@ -26,6 +26,7 @@ Observer.prototype = {
         if(typeof value === "object"){
             var childOb = new Observer(value);
             this.children.push(childOb); 
+            childOb.objName = key; 
             childOb.parent = this; 
         } 
         
@@ -46,9 +47,12 @@ Observer.prototype = {
                 value = newValue; 
 
                 that.evBus.on(key); 
+                // console.log(newValue); 
                 if(typeof newValue === "object"){
-                    var childOb = new Observer(); 
-                    that.push(childOb); 
+                    // console.log(newValue); 
+                    var childOb = new Observer(newValue); 
+                    childOb.ObjName = key; 
+                    that.children.push(childOb); 
                     childOb.parent = that; 
                 } 
             }
@@ -62,9 +66,18 @@ Observer.prototype = {
             };
         var ob = getObserver(this, key); 
         key = key.split(".")[key.split(".").length - 1]; 
-        console.log(ob); 
+        // console.log(ob); 
         ob.evBus.login(key, callback); 
-        console.log(this.evBus); 
+        var termOb = ob; 
+        while(ob.parent){
+            var pKey = ob.key; 
+            ob = ob.parent; 
+            if(ob.evBus[pKey])
+                ob.evBus[pKey].forEach(function(cb){
+                    termOb.evBus.login(key, cb); 
+                })
+        }
+        // console.log(this.evBus); 
     }
 }
 
@@ -88,7 +101,7 @@ function Event(){
 
 Event.prototype = {
     login: function(key, callback){
-        console.log("login: "); 
+        // console.log("login: "); 
         if(!this.evBus[key])
             this.evBus[key] = new Array(); 
         this.evBus[key].push(callback); 
@@ -120,6 +133,9 @@ var observer = new Observer(data);
 // observer.evBus.on("user"); 
 
 observer.$watch("data.user");  
-data.user = 1; //输出 I am user; I have been changed
+data.user = {
+    age: 3, 
+    name: "xx"
+}; //输出 I am user; I have been changed
 observer.$watch("data.user.age"); 
-data.user = 2; //输出 I am age; I have been changed
+data.user.age = 2; //输出 I am age; I have been changed
